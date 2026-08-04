@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>AI Workspace Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div id="splash-screen">
+        <div class="splash-content">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="splash-icon">
+                <path d="M12 2l1.5 4.5L18 8l-4.5 1.5L12 14l-1.5-4.5L6 8l4.5-1.5z" />
+                <path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z" />
+            </svg>
+            <h1>AI Workspace</h1>
+            <div class="splash-loading-bar"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Sidebar -->
+
+        <div class="sidebar collapsed" id="sidebar">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">AI Workspace</h2>
+                <button id="sidebar-toggle">☰</button>
+            </div>
+            <ul>
+                <li class="nav-item active" data-target="chat">
+                    <span class="icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                        </svg>
+                    </span>
+                    <span class="label"> Chat</span>
+                </li>
+                <li class="nav-item" data-target="tasks">
+                    <span class="icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 11 12 14 22 4" />
+                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                        </svg>
+                    </span>
+                    <span class="label"> Tasks</span>
+                </li>
+                <li class="nav-item" data-target="notes">
+                    <span class="icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                            <polyline points="14 2 14 8 20 8" />
+                            <line x1="8" y1="13" x2="16" y2="13" />
+                            <line x1="8" y1="17" x2="16" y2="17" />
+                        </svg>
+                    </span>
+                    <span class="label"> Notes</span>
+                </li>
+                <li class="nav-item" data-target="code">
+                    <span class="icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="16 18 22 12 16 6" />
+                            <polyline points="8 6 2 12 8 18" />
+                        </svg>
+                    </span>
+                    <span class="label"> Code Generator</span>
+                </li>
+                <li class="nav-item" data-target="email">
+                    <span class="icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                            <polyline points="22 6 12 13 2 6" />
+                        </svg>
+                    </span>
+                    <span class="label"> Writing</span>
+                </li>
+                <li class="nav-item" data-target="summary">
+                    <span class="icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                            <polyline points="14 2 14 8 20 8" />
+                        </svg>
+                    </span>
+                    <span class="label"> Docs Summary</span>
+                </li>
+                <li class="nav-item" data-target="research">
+                    <span class="icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        </svg>
+                    </span>
+                    <span class="label"> Research</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+
+            <div id="chat" class="section active">
+                <div class="chat-layout">
+                    <!-- History Panel -->
+                    <div class="chat-history-panel collapsed" id="chat-history-panel">
+                        <div class="history-header">
+                            <h3>History</h3>
+                            <div class="history-header-buttons">
+                                <button id="new-chat-btn" class="icon-btn" title="New Chat">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="12" y1="5" x2="12" y2="19" />
+                                        <line x1="5" y1="12" x2="19" y2="12" />
+                                    </svg>
+                                </button>
+                                <button id="history-toggle" class="icon-btn" title="Toggle history">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="3" y1="12" x2="21" y2="12" />
+                                        <line x1="3" y1="6" x2="21" y2="6" />
+                                        <line x1="3" y1="18" x2="21" y2="18" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="history-list" id="chat-history-list">
+                            <!-- past chats will appear here -->
+                        </div>
+                    </div>
+
+                    <!-- Main Chat Area -->
+                    <div class="chat-main">
+                        <h1>ChatBot</h1>
+
+                        <div class="chat-box" id="chat-box">
+                            <!-- messages will appear here -->
+                        </div>
+
+                        <div class="chat-input-card">
+                            <textarea id="chat-input" placeholder="Type your message..." rows="1"></textarea>
+                            <div class="chat-input-toolbar">
+                                <button id="attach-btn" class="icon-btn" title="Attach file">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path
+                                            d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+                                    </svg>
+                                </button>
+                                <input type="file" id="chat-file-input" hidden>
+
+                                <div class="spacer"></div>
+
+                                <button id="enhance-btn" class="icon-btn" title="Enhance prompt">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 2l1.5 4.5L18 8l-4.5 1.5L12 14l-1.5-4.5L6 8l4.5-1.5z" />
+                                        <path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z" />
+                                    </svg>
+                                </button>
+
+                                <button id="voice-btn" class="icon-btn" title="Voice input">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                                        <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                                        <line x1="12" y1="19" x2="12" y2="23" />
+                                    </svg>
+                                </button>
+
+                                <button id="chat-send-btn" class="icon-btn send-btn" title="Send">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="22" y1="2" x2="11" y2="13" />
+                                        <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tasks" class="section">
+                <h1>Tasks</h1>
+
+                <div class="task-input-area">
+                    <textarea id="task-input" placeholder="Add a new task..." rows="1"></textarea>
+                    <input type="date" id="task-due-date">
+                    <button id="task-add-btn">Add Task</button>
+                </div>
+
+                <ul class="task-list" id="task-list">
+                    <!-- tasks will appear here -->
+                </ul>
+            </div>
+
+            <div id="notes" class="section">
+                <div class="notes-header">
+                    <h1>Notes</h1>
+
+                    <div class="ai-write-container">
+                        <div class="ai-write-panel" id="ai-write-panel">
+                            <input type="text" id="ai-note-topic" placeholder="What should I write notes about?">
+                            <div class="ai-write-toolbar">
+                                <button id="note-voice-btn" class="icon-btn" title="Voice input">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                                        <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                                        <line x1="12" y1="19" x2="12" y2="23" />
+                                    </svg>
+                                </button>
+                                <button id="note-enhance-btn" class="icon-btn" title="Enhance prompt">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 2l1.5 4.5L18 8l-4.5 1.5L12 14l-1.5-4.5L6 8l4.5-1.5z" />
+                                        <path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z" />
+                                    </svg>
+                                </button>
+                                <button id="note-ai-send-btn" class="icon-btn send-btn" title="Generate notes">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="22" y1="2" x2="11" y2="13" />
+                                        <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button id="ai-write-toggle" class="ai-write-btn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2l1.5 4.5L18 8l-4.5 1.5L12 14l-1.5-4.5L6 8l4.5-1.5z" />
+                                <path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z" />
+                            </svg>
+                            <span>Write</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="note-input-area">
+                    <input type="text" id="note-title" placeholder="Note title...">
+                    <textarea id="note-content" placeholder="Write your note here..." rows="4"></textarea>
+                    <button id="note-add-btn">Save Note</button>
+                </div>
+
+                <div class="note-list" id="note-list">
+                    <!-- notes will appear here -->
+                </div>
+            </div>
+
+            <div id="code" class="section">
+                <h1>Code Generator</h1>
+
+                <div class="code-tabs">
+                    <button class="code-tab active" data-tab="generate">Generate</button>
+                    <button class="code-tab" data-tab="debug">Debug / Fix</button>
+                </div>
+
+                <!-- Generate Tab -->
+                <div class="code-tab-content active" id="generate-tab">
+                    <div class="code-input-card">
+                        <textarea id="code-prompt" placeholder="Describe what code you need..." rows="3"></textarea>
+                        <div class="code-input-toolbar">
+                            <button id="code-attach-btn" class="icon-btn" title="Attach file">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path
+                                        d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+                                </svg>
+                            </button>
+                            <input type="file" id="code-file-input" hidden>
+                            <div class="spacer"></div>
+                            <select id="code-language">
+                                <option value="python">Python</option>
+                                <option value="javascript">JavaScript</option>
+                                <option value="java">Java</option>
+                                <option value="c++">C++</option>
+                                <option value="html/css">HTML/CSS</option>
+                                <option value="sql">SQL</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="code-action-row">
+                        <button id="code-generate-btn">Generate Code</button>
+                        <button id="explain-code-btn">Explain Code</button>
+                    </div>
+
+                    <div class="code-output-wrapper">
+                        <div class="code-output-toolbar">
+                            <button id="download-code-btn" class="icon-btn" title="Download as file">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                    <polyline points="7 10 12 15 17 10" />
+                                    <line x1="12" y1="15" x2="12" y2="3" />
+                                </svg>
+                            </button>
+                            <button id="copy-code-btn" class="icon-btn" title="Copy">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" />
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                                </svg>
+                            </button>
+                        </div>
+                        <pre id="code-output"><code>Your generated code will appear here.</code></pre>
+                    </div>
+
+                    <div class="explanation-box" id="explanation-box" style="display: none;">
+                        <h3>Explanation</h3>
+                        <p id="explanation-text"></p>
+                    </div>
+                </div>
+
+                <!-- Debug Tab -->
+                <div class="code-tab-content" id="debug-tab">
+                    <div class="debug-input-card">
+                        <label>Paste your code:</label>
+                        <textarea id="debug-code" placeholder="Paste the broken code here..." rows="6"></textarea>
+
+                        <button id="debug-fix-btn">Fix Code</button>
+                    </div>
+
+                    <div class="code-output-wrapper">
+                        <div class="code-output-toolbar">
+                            <button id="download-fixed-btn" class="icon-btn" title="Download as file">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                    <polyline points="7 10 12 15 17 10" />
+                                    <line x1="12" y1="15" x2="12" y2="3" />
+                                </svg>
+                            </button>
+                            <button id="copy-fixed-btn" class="icon-btn" title="Copy">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" />
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                                </svg>
+                            </button>
+                        </div>
+                        <pre id="fixed-output"><code>Fixed code will appear here.</code></pre>
+                    </div>
+
+                    <div class="explanation-box" id="fix-explanation-box" style="display: none;">
+                        <h3>What was wrong</h3>
+                        <p id="fix-explanation-text"></p>
+                    </div>
+                </div>
+            </div>
+            <div id="email" class="section">
+                <h1>Email/Content Writer</h1>
+
+                <div class="email-card">
+                    <button id="regenerate-btn" title="Regenerate">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="23 4 23 10 17 10" />
+                            <polyline points="1 20 1 14 7 14" />
+                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+                        </svg>
+                    </button>
+                    <button id="open-in-email-btn" title="Open in Email">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                            <polyline points="22 6 12 13 2 6" />
+                        </svg>
+                    </button>
+                    <div id="email-output" contenteditable="true">Generated email will appear here...</div>
+
+                    <div class="email-controls-row">
+                        <input type="text" id="email-subject" placeholder="Input text...">
+                        <select id="content-type">
+                            <option value="email">Email</option>
+                            <option value="social media post">Social Post</option>
+                            <option value="message">Message</option>
+                        </select>
+                        <select id="email-tone">
+                            <option value="formal">Formal</option>
+                            <option value="friendly">Friendly</option>
+                            <option value="professional">Professional</option>
+                        </select>
+                        <button id="email-generate-btn" title="Generate">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="22" y1="2" x2="11" y2="13" />
+                                <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="summary" class="section">
+                <h1>Document Summary</h1>
+
+                <div class="summary-upload-card">
+                    <div class="upload-zone" id="upload-zone">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                            class="upload-icon">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="17 8 12 3 7 8" />
+                            <line x1="12" y1="3" x2="12" y2="15" />
+                        </svg>
+                        <p class="upload-text">Drop a file here, or <span class="upload-browse">browse</span></p>
+                        <p class="upload-hint">Supports .txt, .pdf, .docx, .xlsx, .csv</p>
+                        <input type="file" id="summary-file" accept=".txt,.pdf,.docx,.xlsx,.csv" hidden>
+                    </div>
+
+                    <div class="or-divider"><span>or paste text directly</span></div>
+
+                    <textarea id="summary-input" placeholder="Paste your document text here..." rows="6"></textarea>
+
+                    <div class="summary-controls-row">
+                        <select id="summary-length">
+                            <option value="short">Short</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="detailed">Detailed</option>
+                        </select>
+                        <button id="summary-generate-btn">
+                            <span>Summarize</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="22" y1="2" x2="11" y2="13" />
+                                <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="summary-output-card" id="summary-output-card" style="display: none;">
+                    <div class="summary-output-header">
+                        <h3>Summary</h3>
+                        <button id="copy-summary-btn" class="icon-btn" title="Copy">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="9" y="9" width="13" height="13" rx="2" />
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div id="summary-output">Your summary will appear here.</div>
+                </div>
+
+                <div class="ask-doc-section" id="ask-doc-section" style="display: none;">
+                    <h3>Ask about this document</h3>
+                    <div class="ask-doc-box" id="ask-doc-box"></div>
+                    <div class="ask-doc-input-row">
+                        <input type="text" id="ask-doc-input" placeholder="Ask a question about this document...">
+                        <button id="ask-doc-send-btn" class="icon-btn send-btn" title="Ask">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="22" y1="2" x2="11" y2="13" />
+                                <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div id="research" class="section">
+                <h1>Research Assistant</h1>
+                <div class="research-input-card">
+                    <input type="text" id="research-topic"
+                        placeholder="What would you like to research? e.g. 'Electric vehicle market trends 2026'">
+                    <div class="research-input-toolbar">
+                        <button id="research-attach-btn" class="icon-btn" title="Attach a document">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path
+                                    d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+                            </svg>
+                        </button>
+                        <input type="file" id="research-file-input" accept=".txt,.pdf,.docx,.xlsx,.csv" hidden>
+
+                        <div class="spacer"></div>
+
+                        <button id="research-generate-btn" class="icon-btn send-btn" title="Research">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8" />
+                                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="research-attachment-preview" style="display: none;"></div>
+
+                <div class="research-output-card" id="research-output-card" style="display: none;">
+                    <div class="research-output-header">
+                        <h3 id="research-output-title">Research Summary</h3>
+                        <button id="copy-research-btn" class="icon-btn" title="Copy">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="9" y="9" width="13" height="13" rx="2" />
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div id="research-output">Your research will appear here.</div>
+                </div>
+
+                <div class="ask-doc-section" id="research-ask-section" style="display: none;">
+                    <h3>Ask follow-up questions</h3>
+                    <div class="ask-doc-box" id="research-ask-box"></div>
+                    <div class="ask-doc-input-row">
+                        <input type="text" id="research-ask-input" placeholder="Ask a follow-up question...">
+                        <button id="research-ask-send-btn" class="icon-btn send-btn" title="Ask">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="22" y1="2" x2="11" y2="13" />
+                                <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- end main-content -->
+
+    </div>
+    <!-- end container -->
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>
