@@ -1,4 +1,4 @@
 .env
+workspace.db
 __pycache__/
 *.pyc
-.env
