@@ -79,7 +79,7 @@ def chat():
     user_message = request.json.get('message')
 
     response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="openai/gpt-oss-20b",
         messages=[
             {"role": "system", "content": f"You are a helpful assistant. Today's date is {datetime.now().strftime('%Y-%m-%d')}. Respond ONLY with valid JSON in this exact format, nothing else:\n\n{{\"intent\": \"task\" or \"note\" or \"query_data\" or \"none\", \"task_content\": \"...\" (only if intent is task), \"task_due_date\": \"YYYY-MM-DD\" or null (only if intent is task and a date/day is mentioned or implied, e.g. 'tomorrow', 'Friday', 'next week' - calculate the actual date based on today's date), \"note_title\": \"...\" (only if intent is note), \"note_content\": \"...\" (only if intent is note), \"needs_search\": true or false, \"search_query\": \"a short search query\" (only if needs_search is true), \"reply\": \"your normal conversational reply\" (only needed if intent is 'none' or 'task' or 'note' and needs_search is false)}}\n\nSet intent to 'query_data' ONLY if the user is asking about THEIR OWN saved tasks or notes. Set needs_search to true ONLY if the question needs current, real-time, or very recent public information. Only set intent to 'task' if the user clearly wants a reminder/to-do added. Only set intent to 'note' if they clearly want something saved for reference. Otherwise intent is 'none'."},
             {"role": "user", "content": user_message}
@@ -125,7 +125,7 @@ def chat():
         notes_summary = "\n".join([f"- {n[0]}: {n[1]}" for n in notes_rows]) or "No notes saved."
 
         data_response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="openai/gpt-oss-20b",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant. Answer the user's question using the actual tasks and notes data provided below. Be concise and clear, using plain text with hyphens for lists - no markdown symbols."},
                 {"role": "user", "content": f"My Tasks:\n{tasks_summary}\n\nMy Notes:\n{notes_summary}\n\nQuestion: {user_message}"}
@@ -139,7 +139,7 @@ def chat():
 
         if search_results:
             followup = client.chat.completions.create(
-                model="llama-3.3-70b-versatile",
+                model="openai/gpt-oss-20b",
                 messages=[
                     {"role": "system", "content": "You are a helpful assistant. Use the provided web search results to answer the user's question accurately and concisely. Mention that this is based on current web information if relevant."},
                     {"role": "user", "content": f"Search results:\n{search_results}\n\nQuestion: {user_message}"}
@@ -345,7 +345,7 @@ def generate_code():
     system_prompt = f"You are a code generator. Write the code in {language}. When the user describes what they need, respond ONLY with clean, working code and brief comments where necessary. Do not add long explanations outside the code — a short comment above the code is enough."
 
     response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="openai/gpt-oss-20b",
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt}
@@ -376,7 +376,7 @@ def generate_content():
         system_prompt = f"You are a professional content writer. Write a {tone} {content_type} based on what the user describes. Return ONLY the content, no extra explanation."
 
     response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="openai/gpt-oss-20b",
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": topic}
@@ -400,7 +400,7 @@ def summarize():
     system_prompt = f"You are a summarization assistant. Read the given text and provide a clear summary covering the key points. {length_instructions.get(length, length_instructions['medium'])} Use plain text only - no markdown symbols like asterisks or hashes. Do not add opinions or extra information not present in the original text."
 
     response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="openai/gpt-oss-20b",
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": document_text}
@@ -446,7 +446,7 @@ def enhance_prompt():
     original_prompt = request.json.get('prompt')
 
     response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="openai/gpt-oss-20b",
         messages=[
             {"role": "system", "content": "You are a prompt enhancer. Rewrite the user's input to be clearer, more specific, and more effective as a prompt for an AI assistant, while preserving their original intent. Return ONLY the improved prompt text, nothing else — no explanations, no quotes around it."},
             {"role": "user", "content": original_prompt}
@@ -462,7 +462,7 @@ def generate_notes():
     topic = request.json.get('topic')
 
     response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="openai/gpt-oss-20b",
         messages=[
 {"role": "system", "content": "You are a note-taking assistant. Given a topic, write clear, well-organized study/reference notes on it — NOT a conversational answer. Format using PLAIN TEXT only: use a hyphen (-) for bullet points, write headings as plain capitalized text followed by a colon, and leave a blank line between sections. Do NOT use Markdown symbols like asterisks (*), double asterisks (**), hashes (#), or plus signs (+) anywhere in the response. Keep it clean and readable as plain text. Return ONLY the notes content."},            {"role": "user", "content": topic}
         ]
@@ -476,7 +476,7 @@ def explain_code():
     code = request.json.get('code')
 
     response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="openai/gpt-oss-20b",
         messages=[
             {"role": "system", "content": "You are a code explainer. Given a piece of code, explain in plain, simple language what it does, step by step. Avoid jargon where possible. Keep it concise but clear. Do not repeat the code itself, just explain it."},
             {"role": "user", "content": code}
@@ -491,7 +491,7 @@ def fix_code():
     code = request.json.get('code')
 
     response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="openai/gpt-oss-20b",
         messages=[
             {"role": "system", "content": "You are a code debugger. Given code, find the bug and fix it. Respond in this exact format:\n\nFIXED_CODE:\n<the corrected code only, no explanations inside this part>\n\nEXPLANATION:\n<a short, 1-3 sentence explanation of what was wrong and what you fixed>"},
             {"role": "user", "content": code}
@@ -518,7 +518,7 @@ def ask_document():
     question = request.json.get('question')
 
     response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="openai/gpt-oss-20b",
         messages=[
             {"role": "system", "content": "You are a document assistant. Answer the user's question using ONLY the information in the provided document. If the answer isn't in the document, say so clearly instead of guessing. Format your answer clearly using plain text only - use a hyphen (-) for bullet points and short paragraphs where helpful. Do NOT use Markdown symbols like asterisks, double asterisks, or hashes."},
             {"role": "user", "content": f"Document:\n{document_text}\n\nQuestion: {question}"}
@@ -545,7 +545,7 @@ def research():
         return jsonify({'research': "Sorry, I couldn't find information on this topic. Please try a different or more specific topic, or attach a relevant document."})
 
     response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="openai/gpt-oss-20b",
         messages=[
             {"role": "system", "content": "You are a research assistant. Using the provided context (which may include an attached document and/or web search results), write a well-organized research summary on the topic. Structure it with clear section headings (plain text, followed by a colon) and bullet points (using hyphens) under each. Cover key facts, trends, and relevant details. Use plain text only - no markdown symbols like asterisks or hashes."},
             {"role": "user", "content": f"Topic: {topic}\n\n{context}"}
@@ -567,7 +567,7 @@ def ask_research():
     question = request.json.get('question')
 
     response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="openai/gpt-oss-20b",
         messages=[
             {"role": "system", "content": "You are a research assistant. The user has generated a research summary (provided below) and is now asking follow-up questions. Use the research content as your primary reference, but you may also use your general knowledge to provide a complete, helpful answer if the research doesn't fully cover it. Format your answer clearly using plain text only - use a hyphen (-) for bullet points and short paragraphs where helpful. Do NOT use Markdown symbols like asterisks, double asterisks, or hashes."},
             {"role": "user", "content": f"Research content:\n{research_content}\n\nFollow-up question: {question}"}
@@ -578,4 +578,4 @@ def ask_research():
     return jsonify({'answer': answer})
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
